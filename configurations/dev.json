@@ -1,0 +1,7 @@
+{
+    "acount": "123123123",
+    "region": "us-east-1",
+    "stage": "dev",
+    "domainName": "upload-function.jaggymania.com",
+    "profile": "serverless"
+}
