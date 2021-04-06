@@ -7,6 +7,18 @@ custom:
   config: ${file(configurations/${env:STAGE}.json)}
   stages:
     - ${env.STAGE}
+  alerts:
+    stages:
+      - ${env.STAGE}
+    topics:
+      alarm:
+        topic: ${self:service}-${env:STAGE}-alerts-alarm
+        notifications:
+          - protocol: email
+            endpoint: yorjaggy@gmail.com
+    alarms:
+      - functionErrors
+      - functionThrottles
 
 package:
   individually: true
@@ -17,6 +29,7 @@ package:
     - package.json
   include:
     - uploadImage.js
+    - hooks.js
     - configurations/**
 
 provider:
@@ -42,6 +55,7 @@ provider:
         Action:
           - xray:PutTraceSegments
           - xray:PutTelemetryRecords
+          - codedeploy:*
         Resource: "*"
 
 functions:
@@ -56,8 +70,25 @@ functions:
           path: health
           method: any
           cors: true
+      - http:
+          path: canary
+          method: get
+          cors: true
+    deploymentSettings:
+      type: Linear10PercentEvery1Minute
+      alias: Live
+      preTrafficHook: preHook
+      postTrafficHook: postHook
+      # alarms:
+      #   - FooAlarm          # When a string is provided, it expects the alarm Logical ID
+      #   - name: BarAlarm    # When an object is provided, it expects the alarm name in the name property
     environment:
       Bucket: ${self:custom.bucket}
+
+  preHook:
+    handler: hooks.pre
+  postHook:
+    handler: hooks.post
 
 resources:
   Resources:
@@ -68,6 +99,8 @@ resources:
 
 plugins:
   - serverless-offline
+  - serverless-plugin-canary-deployments
+  - serverless-plugin-aws-alerts
   # - serverless-api-stage
   # - serverless-domain-manager
   # - serverless-apigw-binary

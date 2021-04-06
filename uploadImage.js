@@ -22,6 +22,23 @@ app.get('/health', function (req, res) {
     }))
   })
 
+app.get('/canary' ,function (req, res) {
+
+    let errar = req.query.errar;
+    
+    if ((errar || {}).error) callback(new Error('Oh no!'))
+    console.log('errando')
+    console.log(errar)
+
+    console.log('The first version')
+    const response = {
+      statusCode: 200,
+      body: JSON.stringify({
+        message: 'The first version'
+      })
+    }
+    res.status(200).send(response);
+  })
 
 app.post('/upload', function (req, res) {
     let requestBody = JSON.parse(req.body);
