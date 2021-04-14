@@ -5,7 +5,7 @@ module.exports.pre = (event, context, callback) => {
   var deploymentId = event.DeploymentId
   var lifecycleEventHookExecutionId = event.LifecycleEventHookExecutionId
 
-  console.log('Check some stuff before shifting traffic...')
+  console.log('Check some testing stuff before shifting traffic...')
 
   var params = {
     deploymentId: deploymentId,
