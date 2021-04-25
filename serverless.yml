@@ -3,6 +3,9 @@ service: imageUploader
 frameworkVersion: '2'
 
 custom:
+  prune:
+    automatic: true
+    number: 3
   bucket: getting-started-lambda-example-jaggy
   config: ${file(configurations/${env:STAGE}.json)}
   stages:
@@ -74,6 +77,10 @@ functions:
           path: canary
           method: get
           cors: true
+      - http:
+          path: suma
+          method: post
+          cors: true
     deploymentSettings:
       type: Linear10PercentEvery1Minute
       alias: Live
@@ -101,6 +108,7 @@ plugins:
   - serverless-offline
   - serverless-plugin-canary-deployments
   - serverless-plugin-aws-alerts
+  - serverless-prune-plugin
   # - serverless-api-stage
   # - serverless-domain-manager
   # - serverless-apigw-binary

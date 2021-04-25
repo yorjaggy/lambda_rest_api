@@ -7,6 +7,7 @@ const express = require('express')
 const AWS = require("aws-sdk");
 const { v4: uuidv4 } = require('uuid');
 const Jimp = require("jimp");
+const suma = require("./src/suma.js")
 
 const app = express()
 const s3 = new AWS.S3();
@@ -83,5 +84,20 @@ function uploadToS3(data, key) {
 function fetchImage(url) {
     return Jimp.read(url);
 }
+
+app.post('/suma', function (req, res) {
+    let params = JSON.parse(req.body);
+    let operanUno = params.paramUno;
+    let operanDos = params.paramDos;
+
+    let result = suma(operanUno, operanDos)
+
+    const response = {
+        statusCode: 200,
+        body: 'Your sum result is '+result
+      }
+    
+    res.status(200).send(response);
+})
 
 module.exports.handler = serverless(app);
