@@ -7,20 +7,18 @@ module.exports.post = (event, context, callback) => {
   var deploymentId = event.DeploymentId
   var lifecycleEventHookExecutionId = event.LifecycleEventHookExecutionId
 
-  var testStatus = 'Succeeded'
+  var testResult = 'Succeeded'
   
-  // exec('yarn test', (err, stdout, stderr) => {
-  //   if (stderr.includes("failed")) {
-  //     testStatus = 'Failed'
-  //   }
-  // });
-
-  testStatus = 'Succeeded'
+  exec('yarn test', (err, stdout, stderr) => {
+    if (stderr.includes("failed")) {
+      testResult = 'Failed'
+    }
+  });
   
   var params = {
     deploymentId: deploymentId,
     lifecycleEventHookExecutionId: lifecycleEventHookExecutionId,
-    status: testStatus // status can be 'Succeeded' or 'Failed'
+    status: testResult // status can be 'Succeeded' or 'Failed'
   }
 
   return codedeploy.putLifecycleEventHookExecutionStatus(params).promise()
