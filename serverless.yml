@@ -82,7 +82,7 @@ functions:
           method: post
           cors: true
     deploymentSettings:
-      type: Linear10PercentEvery1Minute
+      type: AllAtOnce
       alias: Live
       postTrafficHook: postHook
       # alarms:
